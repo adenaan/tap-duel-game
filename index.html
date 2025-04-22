@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tap Duel</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background: #121212;
+      color: white;
+      margin: 0;
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    button {
+      font-size: 1.5rem;
+      padding: 1rem 2rem;
+      margin: 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #00c853;
+      color: white;
+      cursor: pointer;
+    }
+    #status {
+      margin-top: 1rem;
+      font-size: 1rem;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Tap Duel</h1>
+  <button id="tapBtn">TAP</button>
+  <div id="status">Connecting...</div>
+
+  <script>
+    const statusEl = document.getElementById("status");
+    const tapBtn = document.getElementById("tapBtn");
+
+    let ws;
+
+    function connectWebSocket() {
+      ws = new WebSocket("wss://tap-duel-server-production.up.railway.app");
+
+      ws.onopen = () => {
+        statusEl.textContent = "Connected! Waiting for other player...";
+      };
+
+      ws.onmessage = (event) => {
+        statusEl.textContent = "Opponent tapped!";
+        flash();
+      };
+
+      ws.onclose = () => {
+        statusEl.textContent = "Disconnected. Refresh to reconnect.";
+      };
+    }
+
+    function flash() {
+      document.body.style.background = "#00e676";
+      setTimeout(() => {
+        document.body.style.background = "#121212";
+      }, 100);
+    }
+
+    tapBtn.onclick = () => {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send("tap");
+        flash();
+      }
+    };
+
+    connectWebSocket();
+  </script>
+
+</body>
+</html>
