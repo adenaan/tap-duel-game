@@ -47,7 +47,7 @@
     let ws;
 
     function connectWebSocket() {
-      ws = new WebSocket("wss://tap-duel-server-production.up.railway.app");
+      ws = new WebSocket("wss://tap-duel.glitch.me");
 
       ws.onopen = () => {
         statusEl.textContent = "Connected! Waiting for other player...";
